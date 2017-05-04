@@ -14,7 +14,11 @@ if [ ! -d "$DIR" ]; then
 	exit 1
 fi
 
-echo "$(date) Running '$0 $@' as $USER"
+if [ -z "$USER" ]; then
+	USER=$(whoami)
+fi
+
+echo "[$(date)] Running '$0 $*' as $USER"
 
 # Make sure to change internal field seperator s.t. filenames with newlines doesn't get split (...)
 find "$DIR" -print0 |
@@ -26,7 +30,7 @@ find "$DIR" -print0 |
 		echo "ERROR: $USER can't write to $f"
 		err=true
 	fi
-	cnt=$(($cnt+1))
+	cnt=$((cnt+1))
   done
   if [ "$err" == true ]; then
 	echo "CRITICAL: Errors detected ($cnt files checked)."
